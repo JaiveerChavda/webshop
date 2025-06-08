@@ -15,14 +15,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         Product::factory(4)
-        ->hasVariants(5)
-        ->has(
-            Image::factory(3)
-             ->sequence(
-                 function (Sequence $sequence) {
-                     return ['featured' => $sequence->index % 3 === 0];
-                 }
-             )
-        )->create();
+            ->hasVariants(5)
+            ->has(
+                Image::factory(3)
+                    ->sequence(
+                        function (Sequence $sequence) {
+                            return ['featured' => $sequence->index % 3 === 0];
+                        }
+                    )
+            )->create();
     }
 }

@@ -30,7 +30,7 @@ class ImageFactory extends Factory
                 'media/example_4.webp',
                 'media/example_5.webp',
                 'media/example_6.webp',
-            ])
+            ]),
         ];
     }
 }
