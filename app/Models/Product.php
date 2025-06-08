@@ -43,7 +43,7 @@ class Product extends Model
         // 2nd way
         return Attribute::make(
             get: function (int $value) {
-                return new Money($value,new Currency('USD'));
+                return new Money($value, new Currency('USD'));
             }
         );
     }

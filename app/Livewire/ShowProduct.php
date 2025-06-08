@@ -9,9 +9,25 @@ class ShowProduct extends Component
 {
     public string $productId;
 
+    public string $variant;
+
+    protected $rules = [
+        'variant' => ['required', 'exists:product_variants,id'],
+    ];
+
+    public function mount()
+    {
+        $this->variant = $this->product->variants->value('id');
+    }
+
     public function getProductProperty()
     {
         return Product::query()->findOrFail($this->productId);
+    }
+
+    public function addToCart()
+    {
+        $this->validate();
     }
 
     public function render()
