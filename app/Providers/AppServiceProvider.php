@@ -34,5 +34,6 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Model::preventsLazyLoading();
+        Model::unguard();
     }
 }
