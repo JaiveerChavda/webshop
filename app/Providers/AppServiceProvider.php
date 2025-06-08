@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Money\Currencies\ISOCurrencies;
@@ -31,5 +32,7 @@ class AppServiceProvider extends ServiceProvider
 
             return $moneyFormatter->format($money);
         });
+
+        Model::preventsLazyLoading();
     }
 }

@@ -3,6 +3,7 @@
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
+use App\Livewire\ShowProduct;
 use App\Livewire\StoreFront;
 use Illuminate\Support\Facades\Route;
 
@@ -11,6 +12,8 @@ Route::get('/', StoreFront::class)->name('home');
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+Route::get('/product/{productId}', ShowProduct::class)->name('product.show');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
