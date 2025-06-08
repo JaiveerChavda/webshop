@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->unsignedInteger('price');
-            $table->unsignedInteger('main_image_id')->nullable();
             $table->timestamps();
         });
     }
