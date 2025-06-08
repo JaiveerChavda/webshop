@@ -1,9 +1,10 @@
 <div class="grid grid-cols-2 gap-10">
-    <div>
-        <img src="/{{ $this->product->image->path  }}" class="rounded-2xl" alt="{{ $this->product->name  }}">
+    <div x-data="{ image: '/{{ $this->product->image->path }}' }">
+        <img :src="image" class="rounded-2xl transition" alt="{{ $this->product->name }}">
         <div class="grid grid-cols-4 gap-2 mt-4">
             @foreach($this->product->images as $image)
-                <img src="/{{ $image->path }}" class="rounded-2xl" alt="product image" loading="lazy">
+                <img src="/{{ $image->path }}" @click="image = '/{{ $image->path }}'" class=" rounded-2xl"
+                     alt="product image" loading="lazy">
             @endforeach
         </div>
     </div>
