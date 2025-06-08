@@ -3,7 +3,8 @@
         <img :src="image" class="rounded-2xl transition" alt="{{ $this->product->name }}">
         <div class="grid grid-cols-4 gap-2 mt-4">
             @foreach($this->product->images as $image)
-                <img src="/{{ $image->path }}" @click="image = '/{{ $image->path }}'" class=" rounded-2xl"
+                <img src="/{{ $image->path }}" @click="image = '/{{ $image->path }}'"
+                     class="border border-gray-300 rounded-2xl"
                      alt="product image" loading="lazy">
             @endforeach
         </div>
