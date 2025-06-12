@@ -31,6 +31,8 @@ class ShowProduct extends Component
         $this->validate();
 
         $cart->add($this->variant);
+
+        $this->dispatch('added-product-to-cart');
     }
 
     public function render()

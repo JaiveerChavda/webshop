@@ -13,11 +13,9 @@ class AddProductVariantToCart
             false => auth()->user()->cart ?: auth()->user()->cart()->create()
         };
 
-        $temp = $cart->items()->create([
+        $cart->items()->create([
             'product_variant_id' => $variantId,
             'quantity' => 1,
         ]);
-
-        
     }
 }
