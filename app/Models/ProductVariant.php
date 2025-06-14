@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class ProductVariant extends Model
 {
     /** @use HasFactory<\Database\Factories\ProductVariantFactory> */
-    use HasFactory;
+    use HasFactory;    
 }

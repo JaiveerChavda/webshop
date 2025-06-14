@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Cart;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
@@ -14,6 +15,8 @@ Route::view('dashboard', 'dashboard')
     ->name('dashboard');
 
 Route::get('/product/{productId}', ShowProduct::class)->name('product.show');
+Route::get('/cart', Cart::class)->name('cart');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
