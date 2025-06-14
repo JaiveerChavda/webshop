@@ -25,6 +25,9 @@
                 </flux:tooltip>
             </flux:navbar>
 
+            {{-- Cart --}}
+            @livewire('navigation-cart')
+
             <!-- Desktop User Menu -->
             @auth
                 <flux:dropdown position="top" align="end">
