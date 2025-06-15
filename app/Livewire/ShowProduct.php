@@ -32,7 +32,7 @@ class ShowProduct extends Component
 
         $cart->add($this->variant);
 
-        $this->dispatch('added-product-to-cart');
+        $this->dispatch('productAddedToCart');
     }
 
     public function render()

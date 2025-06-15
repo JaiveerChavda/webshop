@@ -9,7 +9,12 @@
             @forelse ($this->items as $item)
                 <tr>
                     <td>{{ $item->product->name }} size: {{ $item->variant->size }} color: {{ $item->variant->color }}</td>
-                    <td>{{ $item->quantity }}</td>
+                    <td>{{ $item->quantity }}
+                        
+                    </td>
+                    <td>
+                        <flux:button wire:click="delete( {{ $item->id }})"><flux:icon.trash /></flux:button>
+                    </td>
                 </tr>
             @empty
                 <tr>

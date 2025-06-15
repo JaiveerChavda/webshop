@@ -32,7 +32,7 @@
 
             <flux:button variant="primary" wire:click="addToCart">Add to Cart</flux:button>
 
-            <x-action-message class="me-3" on="added-product-to-cart">
+            <x-action-message class="me-3" on="productAddedToCart">
                 {{ __('Product added to your cart.') }}
             </x-action-message>
         </div>

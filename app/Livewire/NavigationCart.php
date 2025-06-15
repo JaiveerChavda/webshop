@@ -6,9 +6,13 @@ use App\Factories\CartFactory;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-#[On('added-product-to-cart')]
 class NavigationCart extends Component
 {
+    protected $listeners = [
+        'productAddedToCart' => '$refresh',
+        'productRemovedFromCart' => '$refresh'
+    ];
+
     public function getCountProperty()
     {
         return CartFactory::make()->items()->sum('quantity');
