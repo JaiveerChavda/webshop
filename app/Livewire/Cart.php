@@ -18,6 +18,11 @@ class Cart extends Component
         CartFactory::make()->items()->find($itemId)->increment('quantity');
     }
 
+    public function getTotalProperty()
+    {
+        return CartFactory::make()->total;
+    }
+
     public function decrement($itemId)
     {
         $item = CartFactory::make()->items()->find($itemId);
