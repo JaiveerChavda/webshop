@@ -5,7 +5,7 @@
             <caption>
                 <h2>Your Cart</h2>
             </caption>
-            <th class="text-left">Product</th>
+            <th class="text-left py-4">Product</th>
             <th class="text-left">Price</th>
             <th class="text-left">Color</th>
             <th class="text-left">size</th>
@@ -45,11 +45,13 @@
                     </tr>
                 @empty
                     <tr>
-                        <td class="text-center sm:text-2xl">Your Cart is empty</td>
+                        <td align="center" colspan="7" class="text-center sm:text-2xl py-4">Please Add Product To Your Cart</td>
                     </tr>
                 @endforelse
                 <tr>
-                    <td align="right" colspan="6"> <span class="font-bold font-mono">Total</span> {{ $this->total }}</td>
+                    <td align="right" colspan="6" class="pt-3">
+                        <hr class="mb-2"> 
+                        <strong class="font-mono mr-4">Total</strong> {{ $this->total }}</td>
                 </tr>
             </tbody>
         </table>
