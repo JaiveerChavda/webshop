@@ -51,7 +51,7 @@
                 <tr>
                     <td align="right" colspan="6" class="pt-3">
                         <hr class="mb-2"> 
-                        <strong class="font-mono mr-4">Total</strong> {{ $this->total }}</td>
+                        <strong class="font-mono mr-4">Total</strong> {{ $this->cart->total }}</td>
                 </tr>
             </tbody>
         </table>
