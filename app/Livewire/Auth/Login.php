@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Auth;
 
+use App\Actions\WebShop\MigrateSessionCartToUser;
+use App\Factories\CartFactory;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -32,6 +34,9 @@ class Login extends Component
 
         $this->ensureIsNotRateLimited();
 
+        // get session cart
+        $sessionCart = CartFactory::make();
+
         if (! Auth::attempt(['email' => $this->email, 'password' => $this->password], $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
@@ -40,7 +45,14 @@ class Login extends Component
             ]);
         }
 
+        // get user cart
+
+        $userCart = CartFactory::make();
+
+        MigrateSessionCartToUser::migrate($sessionCart, $userCart);
+
         RateLimiter::clear($this->throttleKey());
+
         Session::regenerate();
 
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
