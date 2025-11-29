@@ -7,6 +7,7 @@ use App\Livewire\Settings\Profile;
 use App\Livewire\ShowProduct;
 use App\Livewire\StoreFront;
 use Illuminate\Support\Facades\Route;
+use App\Livewire\CheckoutStatus;
 
 Route::get('/', StoreFront::class)->name('home');
 
@@ -16,6 +17,7 @@ Route::view('dashboard', 'dashboard')
 
 Route::get('/product/{productId}', ShowProduct::class)->name('product.show');
 Route::get('/cart', Cart::class)->name('cart');
+Route::get('/checkout-status', CheckoutStatus::class)->name('checkout.status');
 
 
 Route::middleware(['auth'])->group(function () {
