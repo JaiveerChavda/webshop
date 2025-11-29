@@ -26,14 +26,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
-
-    Route::get('preview/order-email', function () {
-        $order = \App\Models\Order::find(5);
-
-        return new \App\Mail\OrderConfirmation($order);
-
-        // Mail::to($order->user->email)->send(new \App\Mail\OrderConfirmation($order));
-    });
 });
 
 require __DIR__.'/auth.php';
