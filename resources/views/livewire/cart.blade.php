@@ -60,7 +60,9 @@
     <div class=" col-span-1">
         <div class="bg-zinc-50 p-5 rounded-xl shadow">
             @guest
-                please register or login to continue
+                please 
+                <a href="{{ route('register') }}" class="font-medium hover:underline ">register</a> or 
+                <a href="{{ route('login') }}" class="font-medium hover:underline ">login</a> to continue
             @endguest
 
             @auth

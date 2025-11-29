@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Auth;
 
+use App\Actions\WebShop\MigrateSessionCartToUser;
+use App\Factories\CartFactory;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
@@ -34,9 +36,17 @@ class Register extends Component
 
         $validated['password'] = Hash::make($validated['password']);
 
+        // get session cart
+        $sessionCart = CartFactory::make();
+        
         event(new Registered(($user = User::create($validated))));
 
         Auth::login($user);
+
+        // get user cart 
+        $userCart = CartFactory::make();
+
+        MigrateSessionCartToUser::migrate($sessionCart, $userCart);
 
         $this->redirect(route('dashboard', absolute: false), navigate: true);
     }
