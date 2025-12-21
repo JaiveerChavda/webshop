@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -41,13 +42,14 @@ class User extends Authenticatable
     /**
      * Get the user's initials
      */
-    public function initials(): string
+    public function initials(): Attribute
     {
-        return Str::of($this->name)
+        return Attribute::get(fn () => Str::of($this->name)
             ->explode(' ')
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
-            ->implode('');
+            ->implode('')
+        );
     }
 
     /**
@@ -69,7 +71,7 @@ class User extends Authenticatable
     /**
      * Get the user's order items
      */
-    public function orderItems(): HasManyThrough 
+    public function orderItems(): HasManyThrough
     {
         return $this->hasManyThrough(OrderItem::class, Order::class);
     }

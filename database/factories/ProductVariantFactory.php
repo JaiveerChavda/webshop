@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,6 +18,7 @@ class ProductVariantFactory extends Factory
     public function definition(): array
     {
         return [
+            'product_id' => Product::factory(),
             'color' => $this->faker->randomElement(array: ['red', 'white', 'black', 'blue', 'gray']),
             'size' => $this->faker->randomElement(array: ['S', 'M', 'L', 'XL', 'XXL']),
         ];
