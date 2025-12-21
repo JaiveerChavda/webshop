@@ -30,11 +30,9 @@ test('relationships', function () {
 
     Cart::factory()->forUser($user)->create();
 
-    expect($user->cart)->toBeInstanceOf(Cart::class);
-
-    expect($user->orders)->toBeInstanceOf(Collection::class);
-    expect($user->orders)->each()->toBeInstanceOf(Order::class);
-    expect($user->orderItems)->toBeInstanceOf(Collection::class)
+    expect($user->cart)->toBeInstanceOf(Cart::class)
+        ->and($user->orders)->toBeInstanceOf(Collection::class)->each->toBeInstanceOf(Order::class)
+        ->and($user->orderItems)->toBeInstanceOf(Collection::class)
         ->and($user->orderItems)->each->toBeInstanceOf(OrderItem::class);
 });
 
