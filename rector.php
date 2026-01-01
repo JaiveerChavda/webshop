@@ -3,22 +3,25 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
+use RectorPest\Rules\RemoveOnlyRector;
 use RectorPest\Set\PestSetList;
 
 return RectorConfig::configure()
     ->withPaths([
-        __DIR__ . '/app',
-        __DIR__ . '/bootstrap',
-        __DIR__ . '/config',
-        __DIR__ . '/public',
-        __DIR__ . '/resources',
-        __DIR__ . '/routes',
-        __DIR__ . '/tests',
+        __DIR__.'/app',
+        __DIR__.'/bootstrap',
+        __DIR__.'/config',
+        __DIR__.'/public',
+        __DIR__.'/resources',
+        __DIR__.'/routes',
+        __DIR__.'/tests',
     ])->withSets([
-        PestSetList::PEST_CODE_QUALITY
-    ]);    
-    // uncomment to reach your current PHP version
-    // ->withPhpSets()
-    // ->withTypeCoverageLevel(0)
-    // ->withDeadCodeLevel(0)
-    // ->withCodeQualityLevel(0);
+        PestSetList::PEST_CODE_QUALITY,
+    ])->withRules([
+        RemoveOnlyRector::class,
+    ]);
+// uncomment to reach your current PHP version
+// ->withPhpSets()
+// ->withTypeCoverageLevel(0)
+// ->withDeadCodeLevel(0)
+// ->withCodeQualityLevel(0);
