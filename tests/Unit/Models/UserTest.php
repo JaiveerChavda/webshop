@@ -31,9 +31,9 @@ test('relationships', function () {
     Cart::factory()->forUser($user)->create();
 
     expect($user->cart)->toBeInstanceOf(Cart::class)
-        ->and($user->orders)->toBeInstanceOf(Collection::class)->each->toBeInstanceOf(Order::class)
+        ->and($user->orders)->toBeInstanceOf(Collection::class)->toContainOnlyInstancesOf(Order::class)
         ->and($user->orderItems)->toBeInstanceOf(Collection::class)
-        ->and($user->orderItems)->each->toBeInstanceOf(OrderItem::class);
+        ->and($user->orderItems)->toContainOnlyInstancesOf(OrderItem::class);
 });
 
 test('user inital attribute', function () {
