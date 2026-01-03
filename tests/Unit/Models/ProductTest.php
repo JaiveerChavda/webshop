@@ -31,8 +31,8 @@ test('relationships', function () {
         'product_id' => $product->id,
     ]);
 
-    expect($product->variants)->each->toBeInstanceOf(ProductVariant::class)
-        ->and($product->variants)->toHaveCount(3)->and($product->images)->toBeInstanceOf(Collection::class)->and($product->images)->each->toBeInstanceOf(Image::class)->and($product->images)->toHaveCount(5)->and($product->image)->toBeInstanceOf(Image::class);
+     expect($product->variants)->toContainOnlyInstancesOf(ProductVariant::class)
+        ->and($product->variants)->toHaveCount(3)->and($product->images)->toBeInstanceOf(Collection::class)->and($product->images)->toContainOnlyInstancesOf(Image::class)->and($product->images)->toHaveCount(5)->and($product->image)->toBeInstanceOf(Image::class);
 });
 
 test('product price is money object', function () {
