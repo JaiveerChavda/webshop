@@ -35,7 +35,9 @@ test('relationships', function () {
 });
 
 test('cart total is money object', function () {
-    $cart = Cart::factory()->create();
+    $cart = Cart::factory()
+            ->has(CartItem::factory()->count(3), 'items')
+            ->create();
 
     expect($cart->total)->toBeInstanceOf(Money::class);
 });
