@@ -7,7 +7,10 @@ use App\Models\CartItem;
 
 class MigrateSessionCartToUser
 {
-    public static function migrate(Cart $sessionCart, Cart $userCart)
+    /**
+     * @return Cart $userCart
+     */
+    public static function migrate(Cart $sessionCart, Cart $userCart): Cart
     {
         $sessionCart->items->each(function (CartItem $item) use ($userCart) {
 
@@ -16,7 +19,10 @@ class MigrateSessionCartToUser
             ]);
         });
 
-        $sessionCart->items()->delete();
         $sessionCart->delete();
+
+        $userCart->load('items');
+
+        return $userCart;
     }
 }
