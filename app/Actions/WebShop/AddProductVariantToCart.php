@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Actions;
+namespace App\Actions\WebShop;
 
 use App\Factories\CartFactory;
 

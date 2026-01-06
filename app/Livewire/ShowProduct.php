@@ -2,7 +2,7 @@
 
 namespace App\Livewire;
 
-use App\Actions\AddProductVariantToCart;
+use App\Actions\WebShop\AddProductVariantToCart;
 use App\Models\Product;
 use Livewire\Component;
 
