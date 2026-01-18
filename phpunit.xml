@@ -29,6 +29,5 @@
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
-        <env name="STRIPE_SECRET" value="sk_test_51RetEmPTVHV3gYuITo36L0Qf0vsCJ5nv3cFXM7Zykj3d9f9Ff5k5fjXPBWmLdogWFxk2JKFO1kZCOTUNHIxrBJEN00ClyM39Pp"/>
     </php>
 </phpunit>
