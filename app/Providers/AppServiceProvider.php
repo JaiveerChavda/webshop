@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Contracts\StripeGateway;
+use App\Services\Stripe\CashierStripeGateway;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -18,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(StripeGateway::class,CashierStripeGateway::class);
     }
 
     /**

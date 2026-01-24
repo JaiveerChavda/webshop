@@ -2,6 +2,7 @@
 
 namespace App\Actions\WebShop;
 
+use App\Contracts\StripeGateway;
 use App\Mail\OrderConfirmation;
 use App\Models\Cart;
 use App\Models\OrderItem;
@@ -13,10 +14,13 @@ use Stripe\LineItem;
 
 class StripeCheckoutSessionCompleted
 {
+
+    public function __construct(private StripeGateway $stripeGateway){}
+
     public function handle($sessionId)
     {
         DB::transaction(function () use ($sessionId) {
-            $session = Cashier::stripe()->checkout->sessions->retrieve($sessionId);
+            $session = $this->stripeGateway->retrieveCheckoutSession($sessionId);
             $user = User::find($session->metadata->user_id);
             $cart = Cart::find($session->metadata->cart_id);
 
@@ -47,10 +51,10 @@ class StripeCheckoutSessionCompleted
                 ],
             ]);
 
-            $lineItems = Cashier::stripe()->checkout->sessions->allLineItems($session->id);
+            $lineItems = $this->    stripeGateway->listCheckoutLineItems($sessionId);
 
             $orderItems = collect($lineItems->all())->map(function (LineItem $line) {
-                $product = Cashier::stripe()->products->retrieve($line->price->product);
+                $product = $this->stripeGateway->retrieveProduct($line->price->product);
 
                 return new OrderItem([
                     'product_variant_id' => $product->metadata->variant_id,
