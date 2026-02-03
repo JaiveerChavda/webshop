@@ -47,3 +47,25 @@ test('users can logout', function () {
 
     $this->assertGuest();
 });
+
+it('login is rate limited after 5 attempts',function(){
+    $user = User::factory()->create();
+
+    $component = Livewire::test(Login::class)
+        ->set('email', $user->email)
+        ->set('password', 'wrong-password');
+    
+    for($i = 0; $i < 5; $i++){
+        $component->call('login')
+        ->assertHasErrors(['email' => __('auth.failed')]);
+    }
+        
+    // 6th attempt → rate limited
+    $component->call('login')
+        ->assertHasErrors(['email']);
+
+    $this->assertStringContainsString(
+    __('auth.throttle', ['seconds' => 59]),
+    $component->errors()->first('email')
+);
+});
