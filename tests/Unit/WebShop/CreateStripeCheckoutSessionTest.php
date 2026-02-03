@@ -19,8 +19,7 @@ it('create stripe checkout session for a user cart', function () {
     (new AddProductVariantToCart)->add($product->variants->last()->id);
 
     $cart = $user->refresh()->cart;
-    expect($cart)->not()->toBeNull();
-    expect($cart->items)->toHaveCount(2);
+    expect($cart)->not()->toBeNull()->and($cart->items)->toHaveCount(2);
 
     $fakeSession = Mockery::mock(Checkout::class);
     $fakeSession->url = 'https://checkout.stripe.test/session/123';
@@ -36,9 +35,5 @@ it('create stripe checkout session for a user cart', function () {
 
     $session = (new CreateStripeCheckoutSession)->createFromCart($cart);
 
-    expect($session)->not()->toBeNull();
-    expect($session)->toBeInstanceOf(Checkout::class);
-    expect($session->url)->toBeString();
-    expect($session->url)->toStartWith('https://');
-    expect($session->url)->toContain('checkout.stripe.test');
+    expect($session)->not()->toBeNull()->toBeInstanceOf(Checkout::class)->and($session->url)->toBeString()->toStartWith('https://')->toContain('checkout.stripe.test');
 });

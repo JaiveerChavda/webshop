@@ -31,8 +31,6 @@ it('can add product variant to cart', function () {
 
     $cart->refresh();
 
-    expect($cart->items->count())->toBe(2);
-    expect($cart->items->first()->quantity)->toBe(2);
-    expect($cart->items->last()->quantity)->toBe(1);
+    expect($cart->items->count())->toBe(2)->and($cart->items->first()->quantity)->toBe(2)->and($cart->items->last()->quantity)->toBe(1);
     $this->assertDatabaseCount('cart_items', 2);
 });
