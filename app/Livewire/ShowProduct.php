@@ -33,6 +33,7 @@ class ShowProduct extends Component
         $cart->add($this->variant);
 
         $this->dispatch('productAddedToCart');
+        $this->dispatch('notification.created', type: 'success', message: 'Product added to your cart');
     }
 
     public function render()

@@ -17,6 +17,8 @@ class Logout
         Session::invalidate();
         Session::regenerateToken();
 
+        session()->flash('flash-message', 'You have been logged out');
+
         return redirect('/');
     }
 }
