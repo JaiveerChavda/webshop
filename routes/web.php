@@ -7,17 +7,16 @@ use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use App\Livewire\ShowProduct;
-use App\Livewire\StoreFront;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', StoreFront::class)->name('home');
+Route::livewire('/', 'pages::home')->name('home');
 
 Route::get('/product/{productId}', ShowProduct::class)->name('product.show');
 Route::get('/cart', Cart::class)->name('cart');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout-status', CheckoutStatus::class)->name('checkout.status');
-    Route::view('dashboard','dashboard')->name('dashboard')->middleware('verified');
+    Route::livewire('dashboard','pages::dashboard')->name('dashboard')->middleware('verified');
 
     Route::get('orders',Orders::class)->name('orders.index');
 
