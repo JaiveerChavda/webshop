@@ -112,6 +112,10 @@ Run the migrations and seed the database:
 php artisan migrate --seed
 ```
 
+```bash
+php artisan db:seed
+```
+
 #### 7. Link storage
 
 Create a symbolic link from `public/storage` to `storage/app/public`:
