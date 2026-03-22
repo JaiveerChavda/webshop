@@ -45,23 +45,25 @@
                     </tr>
                 @empty
                     <tr>
-                        <td align="center" colspan="7" class="text-center sm:text-2xl py-4">Please Add Product To Your Cart</td>
+                        <td align="center" colspan="7" class="text-center sm:text-2xl py-4">Please Add Product To Your Cart
+                        </td>
                     </tr>
                 @endforelse
                 <tr>
                     <td align="right" colspan="6" class="pt-3">
-                        <hr class="mb-2"> 
-                        <strong class="font-mono mr-4">Total</strong> {{ $this->cart->total }}</td>
+                        <hr class="mb-2">
+                        <strong class="font-mono mr-4">Total</strong> {{ $this->cart->total }}
+                    </td>
                 </tr>
             </tbody>
         </table>
 
     </div>
-    <div class=" col-span-1">
+    <div class="col-span-1">
         <div class="bg-zinc-50 p-5 rounded-xl shadow">
             @guest
-                please 
-                <a href="{{ route('register') }}" class="font-medium hover:underline ">register</a> or 
+                please
+                <a href="{{ route('register') }}" class="font-medium hover:underline ">register</a> or
                 <a href="{{ route('login') }}" class="font-medium hover:underline ">login</a> to continue
             @endguest
 

@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Route;
 Route::livewire('/', 'pages::home')->name('home');
 
 Route::get('/product/{productId}', ShowProduct::class)->name('product.show');
-Route::get('/cart', Cart::class)->name('cart');
+
+Route::livewire('cart','pages::cart')->name('cart');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout-status', CheckoutStatus::class)->name('checkout.status');

@@ -1,22 +1,24 @@
 <?php
 
-namespace App\Livewire;
+use Livewire\Attributes\Computed;
+use Livewire\Component;
 
 use App\Actions\WebShop\CreateStripeCheckoutSession;
 use App\Factories\CartFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Livewire\Attributes\On;
-use Livewire\Component;
 
-class Cart extends Component
+new class extends Component
 {
-    public function getCartProperty()
+    #[Computed()]
+    public function cart()
     {
         return CartFactory::make()->loadMissing(['items', 'items.variant', 'items.product']);
     }
 
     #[On('productRemovedFromCart')]
-    public function getItemsProperty()
+    #[Computed()]
+    public function items()
     {
         return $this->cart->items;
     }
@@ -48,11 +50,10 @@ class Cart extends Component
 
     public function checkout()
     {
-        return (new CreateStripeCheckoutSession)->createFromCart($this->cart);
+        if($this->items->isNotEmpty()){
+            return (new CreateStripeCheckoutSession)->createFromCart($this->cart);
+        }else{
+            throw new Exception('Cannot create checkout for empty cart');
+        }
     }
-
-    public function render()
-    {
-        return view('livewire.cart');
-    }
-}
+};
