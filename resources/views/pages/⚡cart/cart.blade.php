@@ -59,6 +59,7 @@
         </table>
 
     </div>
+
     <div class="col-span-1">
         <div class="bg-zinc-50 p-5 rounded-xl shadow">
             @guest
@@ -68,7 +69,7 @@
             @endguest
 
             @auth
-                <flux:button variant="primary" size="sm" wire:click="checkout">
+                <flux:button @class(["opacity-50 pointer-events-none disabled" => ! $this->isCheckoutActionVisible]) variant="primary" size="sm" wire:click="checkout">
                     Continue Checkout
                 </flux:button>
             @endauth

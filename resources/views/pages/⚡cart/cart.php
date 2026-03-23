@@ -1,6 +1,7 @@
 <?php
 
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Renderless;
 use Livewire\Component;
 
 use App\Actions\WebShop\CreateStripeCheckoutSession;
@@ -10,6 +11,7 @@ use Livewire\Attributes\On;
 
 new class extends Component
 {
+
     #[Computed()]
     public function cart()
     {
@@ -28,32 +30,41 @@ new class extends Component
         $this->cart->items->find($itemId)->increment('quantity');
     }
 
+    #[Computed()]
+    public function isCheckoutActionVisible()
+    {
+        return $this->items->isNotEmpty();
+    }
+
     public function decrement($itemId)
     {
         $item = $this->cart->items->find($itemId);
         if ($item->quantity > 1) {
             $item->decrement('quantity');
         }
+        $this->isCheckoutActionVisible();
     }
 
     public function delete($itemId)
     {
         $cart = $this->cart;
-        $cartItem = $cart->items->where('id', $itemId)->first;
+        $cartItem = $cart->items->where('id', $itemId)->first();
         if (! $cartItem) {
             throw new ModelNotFoundException;
         }
 
         $cartItem->delete();
+        unset($this->cart,$this->items);
         $this->dispatch('productRemovedFromCart');
+
     }
 
     public function checkout()
     {
         if($this->items->isNotEmpty()){
             return (new CreateStripeCheckoutSession)->createFromCart($this->cart);
-        }else{
-            throw new Exception('Cannot create checkout for empty cart');
         }
+            
+        throw new Exception('Cannot create checkout for empty cart');
     }
 };
