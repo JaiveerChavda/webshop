@@ -17,7 +17,6 @@ Route::livewire('cart','pages::cart')->name('cart');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/checkout-status', CheckoutStatus::class)->name('checkout.status');
-    Route::livewire('dashboard','pages::dashboard')->name('dashboard')->middleware('verified');
 
     Route::get('orders',Orders::class)->name('orders.index');
 

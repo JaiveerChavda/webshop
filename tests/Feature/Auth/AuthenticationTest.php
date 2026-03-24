@@ -20,7 +20,7 @@ test('users can authenticate using the login screen', function () {
 
     $response
         ->assertHasNoErrors()
-        ->assertRedirect(route('dashboard', absolute: false));
+        ->assertRedirect(route('home', absolute: false));
 
     $this->assertAuthenticated();
 });
@@ -54,12 +54,12 @@ it('login is rate limited after 5 attempts',function(){
     $component = Livewire::test(Login::class)
         ->set('email', $user->email)
         ->set('password', 'wrong-password');
-    
+
     for($i = 0; $i < 5; $i++){
         $component->call('login')
         ->assertHasErrors(['email' => __('auth.failed')]);
     }
-        
+
     // 6th attempt → rate limited
     $component->call('login')
         ->assertHasErrors(['email']);

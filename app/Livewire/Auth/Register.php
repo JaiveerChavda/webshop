@@ -38,16 +38,16 @@ class Register extends Component
 
         // get session cart
         $sessionCart = CartFactory::make();
-        
+
         event(new Registered(($user = User::create($validated))));
 
         Auth::login($user);
 
-        // get user cart 
+        // get user cart
         $userCart = CartFactory::make();
 
         MigrateSessionCartToUser::migrate($sessionCart, $userCart);
 
-        $this->redirect(route('dashboard', absolute: false), navigate: true);
+        $this->redirect(route('home', absolute: false), navigate: true);
     }
 }
