@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Support\MoneyFormatter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Money\Money;
 
 class ProductsTable
 {
@@ -17,7 +19,8 @@ class ProductsTable
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('price')
-                    ->money('USD'),
+                    ->label('Price')
+                    ->formatStateUsing(fn (Money $state) => MoneyFormatter::format($state) ),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Contracts\StripeGateway;
 use App\Services\Stripe\CashierStripeGateway;
+use App\Support\MoneyFormatter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -33,13 +34,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Blade::stringable(function (Money $money) {
-            $currencies = new ISOCurrencies;
-            $numberFormatter = new NumberFormatter('en_US', NumberFormatter::CURRENCY);
-            $moneyFormatter = new IntlMoneyFormatter($numberFormatter, $currencies);
-
-            return $moneyFormatter->format($money);
-        });
+        Blade::stringable(fn (Money $money) => MoneyFormatter::format($money));
 
         Model::preventsLazyLoading();
         Model::unguard();
