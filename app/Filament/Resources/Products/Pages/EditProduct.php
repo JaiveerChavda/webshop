@@ -16,4 +16,21 @@ class EditProduct extends EditRecord
             DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        $money = $data['price'];
+        info($money->getAmount());
+        $data['price'] = $money->getAmount() / 100;
+
+        return $data;
+    }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        // convert in cents.
+        $data['price'] = $data['price'] * 100;
+
+        return $data;
+    }
 }
