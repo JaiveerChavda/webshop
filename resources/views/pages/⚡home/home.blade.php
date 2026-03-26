@@ -5,7 +5,7 @@
         p-4 rounded-2xl transition shadow">
             <a @class(['flex flex-col gap-2 items-center']) href="{{ route('product.show',[$product->id]) }}">
 
-                <img loading="lazy" src="{{ $product->image->path }}" class="mb-3 rounded-2xl" alt="Product Image">
+                <img loading="lazy" src="{{ $product->previewImageUrl }}" class="mb-3 rounded-2xl" alt="Product Image">
                 <p class="text-xl font-medium">{{ $product->name }}</p>
                 <p class="text-sm dark:text-gray-100">{{ $product->price }}</p>
             </a>
