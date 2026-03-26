@@ -10,11 +10,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Number;
 use Money\Currency;
 use Money\Money;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Product extends Model
+class Product extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
-    use HasFactory;
+    use HasFactory,InteractsWithMedia;
 
     public function variants(): HasMany
     {
@@ -46,5 +50,13 @@ class Product extends Model
                 return new Money($value, new Currency('USD'));
             }
         );
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this
+            ->addMediaConversion('preview')
+            ->fit(Fit::Contain, 300, 300)
+            ->nonQueued();
     }
 }
