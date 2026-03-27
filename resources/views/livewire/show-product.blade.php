@@ -1,12 +1,14 @@
 <div class="grid grid-cols-2 gap-10">
-    <div x-data="{ image: '/{{ $this->product->image->path }}' }">
+    <div x-data="{ image: '{{ $this->product->original_image_url }}' }">
         <img :src="image" class="rounded-2xl transition" alt="{{ $this->product->name }}">
         <div class="grid grid-cols-4 gap-2 mt-4">
-            @foreach($this->product->images as $image)
-                <img src="/{{ $image->path }}" @click="image = '/{{ $image->path }}'"
+            @forelse($this->product->getMedia() as $media)
+                <img src="{{ $media->preview_url }}" @click="image = '{{ $media->original_url }}'"
                      class="border border-gray-300 rounded-2xl"
                      alt="product image" loading="lazy">
-            @endforeach
+            @empty
+                <div>No image exists</div>
+            @endforelse
         </div>
     </div>
     <div>

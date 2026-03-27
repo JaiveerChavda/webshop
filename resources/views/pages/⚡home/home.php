@@ -9,6 +9,6 @@ new class extends Component
     #[Computed()]
     public function Products()
     {
-        return Product::with('variants', 'images')->get();
+        return Product::with('variants')->get();
     }
 };

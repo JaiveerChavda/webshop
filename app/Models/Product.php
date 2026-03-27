@@ -14,10 +14,16 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
+/**
+ * @property-read string $original_image_url;
+ * @property-read string $preview_image_url;
+ */
+
 class Product extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory,InteractsWithMedia;
+    protected $appends = ['original_image_url', 'preview_image_url'];
 
     public function variants(): HasMany
     {
@@ -51,10 +57,11 @@ class Product extends Model implements HasMedia
 
     public function previewImageUrl(): Attribute
     {
-        return Attribute::make(
-            get: function () {
-                return $this->getFirstMedia()['preview_url'];
-            }
-        );
+        return Attribute::get(fn() => $this->getFirstMedia()['preview_url']);
+    }
+
+    public function originalImageUrl(): Attribute
+    {
+        return Attribute::get(fn() => $this->getFirstMedia()['original_url']);
     }
 }
