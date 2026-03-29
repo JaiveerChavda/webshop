@@ -3,7 +3,9 @@
 namespace App\Livewire;
 
 use App\Actions\WebShop\AddProductVariantToCart;
+use App\Factories\CartFactory;
 use App\Models\Product;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class ShowProduct extends Component
@@ -36,8 +38,14 @@ class ShowProduct extends Component
         $this->dispatch('notification.created', type: 'success', message: 'Product added to your cart');
     }
 
-    public function render()
+    #[Computed()]
+    public function isVariantAlreadyAddedToCart()
     {
+        return CartFactory::make()->items()->pluck('product_variant_id')->contains((int) $this->variant);
+    }
+
+    public function render()
+    {        
         return view('livewire.show-product');
     }
 }

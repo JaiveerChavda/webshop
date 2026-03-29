@@ -32,7 +32,11 @@
                 @enderror
             </div>
 
-            <flux:button variant="primary" wire:click="addToCart">Add to Cart</flux:button>
+            @if ($this->isVariantAlreadyAddedToCart)
+                <flux:button variant="primary" :href="route('cart')" icon="shopping-cart">Go to cart</flux:button>
+            @else
+                <flux:button variant="primary" wire:click="addToCart">Add to Cart</flux:button>
+            @endif
         </div>
     </div>
 </div>
