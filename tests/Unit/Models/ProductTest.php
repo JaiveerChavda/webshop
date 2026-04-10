@@ -17,22 +17,19 @@ test('to Array', function () {
         'price',
         'created_at',
         'updated_at',
+        'original_image_url',
+        'preview_image_url',
+        'media',
     ]);
 });
 
 test('relationships', function () {
     $product = Product::factory()
         ->has(ProductVariant::factory()->count(3), 'variants')
-        ->has(Image::factory()->count(4), 'images')
         ->create();
 
-    Image::factory()->create([
-        'featured' => 1,
-        'product_id' => $product->id,
-    ]);
-
-     expect($product->variants)->toContainOnlyInstancesOf(ProductVariant::class)
-        ->and($product->variants)->toHaveCount(3)->and($product->images)->toBeInstanceOf(Collection::class)->and($product->images)->toContainOnlyInstancesOf(Image::class)->and($product->images)->toHaveCount(5)->and($product->image)->toBeInstanceOf(Image::class);
+    expect($product->variants)->toContainOnlyInstancesOf(ProductVariant::class)
+        ->and($product->variants)->toHaveCount(3);
 });
 
 test('product price is money object', function () {

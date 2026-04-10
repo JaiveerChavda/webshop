@@ -57,11 +57,11 @@ class Product extends Model implements HasMedia
 
     public function previewImageUrl(): Attribute
     {
-        return Attribute::get(fn() => $this->getFirstMedia()['preview_url']);
+        return Attribute::get(fn () => $this->getFirstMedia()?->getUrl('preview'));
     }
 
     public function originalImageUrl(): Attribute
     {
-        return Attribute::get(fn() => $this->getFirstMedia()['original_url']);
+        return Attribute::get(fn () => $this->getFirstMedia()?->getUrl());
     }
 }
