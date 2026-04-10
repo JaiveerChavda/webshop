@@ -1,11 +1,15 @@
 <div class="grid grid-cols-2 gap-10">
     <div x-data="{ image: '{{ $this->product->original_image_url }}' }">
-        <img :src="image" class="rounded-2xl transition" alt="{{ $this->product->name }}">
+        <div class="w-full aspect-square overflow-hidden rounded-xl bg-transparent">
+            <img :src="image" class="rounded-2xl transition" alt="{{ $this->product->name }}">
+        </div>
         <div class="grid grid-cols-4 gap-2 mt-4">
             @forelse($this->product->getMedia() as $media)
+            <div class="w-full overflow-hidden aspect-square flex items-center">
                 <img src="{{ $media->preview_url }}" @click="image = '{{ $media->original_url }}'"
-                     class="border border-gray-300 rounded-2xl"
+                     class=" rounded-2xl"
                      alt="product image" loading="lazy">
+            </div>
             @empty
                 <div>No image exists</div>
             @endforelse
@@ -13,7 +17,7 @@
     </div>
     <div>
         <h1 class="text-3xl font-bold">{{ $this->product->name }}</h1>
-        <p class="text-xl text-gray-700 dark:text-white">{{ $this->product->price }}</p>
+        <p class="text-xl text-gray-700 dark:text-white mt-2">{{ $this->product->price }}</p>
         <p class="mt-4">{!! $this->product->description !!}</p>
 
         <div @class(['mt-10 space-y-10'])>
