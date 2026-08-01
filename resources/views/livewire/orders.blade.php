@@ -5,10 +5,11 @@
     </div>
     <ol class="space-y-4">
         @forelse ($orderItems as $item)
-        <li class="grid gap-4 grid-cols-3 p-2 justify-items-center  bg-white rounded-md items-center">
-            <img src="{{ $item->variant->product->image->path }}" alt="Order image" class="w-18 h-18 object-cover rounded-lg bg-transparent">
+        <li class="grid gap-4 grid-cols-4 p-2 justify-items-center  bg-white rounded-md items-center">
+            <img src="{{ $item->variant->product->preview_image_url }}" alt="Order image" class="w-18 h-18 object-cover rounded-lg bg-transparent">
             <p class="text-sm font-normal">{{ $item->description }}</p>
             <p class="text-base font-medium">{{ $item->amount_total }}</p>
+            <p class="text-sm ">{{ $item->order->created_at->diffForHumans() }}</p>
         </li>
         @empty
             <p class="mt-4 text-zinc-600 dark:text-zinc-400">{{ __('You have no orders yet.') }}</p>
