@@ -4,8 +4,10 @@ namespace App\Filament\Resources\Products\Tables;
 
 use App\Support\MoneyFormatter;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Money\Money;
@@ -21,6 +23,10 @@ class ProductsTable
                 TextColumn::make('price')
                     ->label('Price')
                     ->formatStateUsing(fn (Money $state) => MoneyFormatter::format($state) ),
+                TextColumn::make('orders_count')
+                    ->counts('orders')
+                    ->label('Orders')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -35,6 +41,7 @@ class ProductsTable
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
