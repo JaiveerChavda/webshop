@@ -12,10 +12,10 @@ class ShowProduct extends Component
 {
     public string $productId;
 
-    public string $variant;
+    public ?int $variant = null;
 
     protected $rules = [
-        'variant' => ['required', 'exists:product_variants,id'],
+        'variant' => ['required', 'integer', 'exists:product_variants,id'],
     ];
 
     public function mount()
@@ -39,13 +39,15 @@ class ShowProduct extends Component
     }
 
     #[Computed()]
-    public function isVariantAlreadyAddedToCart()
+    public function isVariantAlreadyAddedToCart(): bool
     {
-        return CartFactory::make()->items()->pluck('product_variant_id')->contains((int) $this->variant);
+        return $this->variant ?
+         CartFactory::make()->items()->pluck('product_variant_id')->contains((int) $this->variant)
+         : false;
     }
 
     public function render()
-    {        
+    {
         return view('livewire.show-product');
     }
 }
