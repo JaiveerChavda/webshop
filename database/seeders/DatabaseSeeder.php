@@ -16,13 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         Product::factory(4)
             ->hasVariants(5)
-            ->has(
-                Image::factory(3)
-                    ->sequence(
-                        function (Sequence $sequence) {
-                            return ['featured' => $sequence->index % 3 === 0];
-                        }
-                    )
-            )->create();
+            ->create();
     }
 }
