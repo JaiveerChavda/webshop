@@ -82,7 +82,7 @@
 
             @guest
                 <flux:dropdown position="top" align="end" >
-                    <flux:button size="sm" icon="user" />
+                    <flux:button size="sm" icon="user"  data-testid="user-menu-button" />
                     <flux:menu>
                         <flux:menu.radio.group>
                             <flux:menu.item :href="route('login')" icon="arrow-right-start-on-rectangle" wire:navigate>{{ __('Login') }}</flux:menu.item>
