@@ -2,12 +2,13 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
+use App\Models\Product;
 use App\Support\MoneyFormatter;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\BadgeColumn;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Money\Money;
@@ -23,7 +24,7 @@ class ProductsTable
                 TextColumn::make('price')
                     ->label('Price')
                     ->sortable()
-                    ->formatStateUsing(fn (Money $state) => MoneyFormatter::format($state) ),
+                    ->formatStateUsing(fn (Money $state) => MoneyFormatter::format($state)),
                 TextColumn::make('orders_count')
                     ->counts('orders')
                     ->label('Orders')
@@ -42,7 +43,19 @@ class ProductsTable
             ])
             ->recordActions([
                 EditAction::make(),
-                DeleteAction::make(),
+                DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->before(function (DeleteAction $action, Product $record) {
+                        if ($record->orders_count) {
+
+                            Notification::make()
+                                ->danger()
+                                ->title('Cannot delete this product')
+                                ->body('This product has orders.')
+                                ->send();
+                            $action->cancel();
+                        }
+                    }),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
