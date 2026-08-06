@@ -22,6 +22,7 @@ class ProductsTable
                     ->searchable(),
                 TextColumn::make('price')
                     ->label('Price')
+                    ->sortable()
                     ->formatStateUsing(fn (Money $state) => MoneyFormatter::format($state) ),
                 TextColumn::make('orders_count')
                     ->counts('orders')
