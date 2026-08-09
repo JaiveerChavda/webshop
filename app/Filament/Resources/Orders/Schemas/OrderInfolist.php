@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
+use App\Livewire\Admin\Orders\OrderItemsTable;
 use App\Models\Order;
 use App\Support\MoneyFormatter;
 use Filament\Infolists\Components\KeyValueEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Livewire;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontFamily;
@@ -39,11 +41,17 @@ class OrderInfolist
                                     })
                                     ->columnSpanFull(),
                             ])->columns(3),
-                        Section::make('Buyer Info')
-                            ->collapsible()
+                        Section::make('Customer')
                             ->schema([
                                 TextEntry::make('user.name'),
                                 TextEntry::make('user.email'),
+                            ]),
+
+                        Section::make('Purchased Items')
+                            ->collapsible()
+                            ->columnSpanFull()
+                            ->schema([
+                                Livewire::make(OrderItemsTable::class, fn ($record) => ['order' => $record]),
                             ]),
                     ]),
             ]);
