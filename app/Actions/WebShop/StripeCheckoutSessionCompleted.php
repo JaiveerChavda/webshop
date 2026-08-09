@@ -9,13 +9,11 @@ use App\Models\OrderItem;
 use App\Models\User;
 use DB;
 use Illuminate\Support\Facades\Mail;
-use Laravel\Cashier\Cashier;
 use Stripe\LineItem;
 
 class StripeCheckoutSessionCompleted
 {
-
-    public function __construct(private StripeGateway $stripeGateway){}
+    public function __construct(private StripeGateway $stripeGateway) {}
 
     public function handle($sessionId)
     {
@@ -51,7 +49,7 @@ class StripeCheckoutSessionCompleted
                 ],
             ]);
 
-            $lineItems = $this->    stripeGateway->listCheckoutLineItems($sessionId);
+            $lineItems = $this->stripeGateway->listCheckoutLineItems($sessionId);
 
             $orderItems = collect($lineItems->all())->map(function (LineItem $line) {
                 $product = $this->stripeGateway->retrieveProduct($line->price->product);
