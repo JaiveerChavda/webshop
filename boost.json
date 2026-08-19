@@ -1,13 +1,15 @@
 {
     "agents": [
-        "codex"
+        "codex",
+        "opencode"
     ],
     "cloud": false,
     "guidelines": true,
     "mcp": true,
     "nightwatch": false,
     "packages": [
-        "filament/filament"
+        "filament/filament",
+        "mrpunyapal/laravel-auditor"
     ],
     "sail": false,
     "skills": [
@@ -16,6 +18,15 @@
         "fluxui-development",
         "volt-development",
         "pest-testing",
-        "tailwindcss-development"
+        "tailwindcss-development",
+        "laravel-audit",
+        "laravel-audit-architecture",
+        "laravel-audit-conventions",
+        "laravel-audit-database",
+        "laravel-audit-dsa",
+        "laravel-audit-performance",
+        "laravel-audit-security",
+        "laravel-audit-testing",
+        "laravel-auditor-development"
     ]
 }

@@ -342,4 +342,87 @@ livewire(ListUsers::class)
 - **Never assume public file visibility.** File visibility is `private` by default. Always use `->visibility('public')` when public access is needed.
 - **Never assume full-width layout.** `Grid`, `Section`, and `Fieldset` do not span all columns by default. Explicitly set column spans when needed.
 
+=== mrpunyapal/laravel-auditor/core rules ===
+
+## Laravel Auditor
+
+Laravel Auditor equips an **existing** AI coding agent with an evidence-based Laravel audit methodology. It does not scan the app by itself. Use it when the user asks to audit, review, or assess a Laravel application.
+
+### Relationship to Boost
+
+Laravel Auditor extends Laravel Boost. It does **not** replace Boost's general Laravel context. Continue using Boost's documentation search and general Laravel guidelines. Use Laravel Auditor when asked to audit, review, or assess an existing Laravel application.
+
+### What Laravel Auditor provides
+
+- A structured audit workflow: **Discover** project facts, **Scope** relevant domains, **Investigate** with evidence, **Verify** high-severity findings, and **Report** structured findings.
+- Six audit domains: security, performance, architecture, database, testing, and Laravel conventions.
+- Stable audit rules with rule IDs (e.g. `AUD-SEC-001`), severity, confidence, evidence requirements, and false-positive considerations.
+- Context tools that expose deterministic Laravel facts: project info, routes, models, migrations, database schema, dependencies, configuration, authorization, jobs/events/schedules, tests, and subsystems.
+- A finding schema: id, rule ID, title, domain, severity, confidence, status, summary, why-it-matters, evidence, affected resources, recommendation, remediation, verification notes, and optional `metadata.priority` (`p0`–`p3`).
+
+### Installing
+
+```bash
+composer require --dev mrpunyapal/laravel-auditor
+php artisan boost:install
+```
+
+When Boost is not installed, use the package's own installer instead:
+
+```bash
+php artisan auditor:install --agents=claude_code
+```
+
+Useful commands: `auditor:status`, `auditor:rules` (`--applicable`), `auditor:context`, `auditor:report`, `auditor:ci`, and `auditor:mcp`.
+
+`composer audit` is **on by default**. Test-case listing is **off by default**. Do not treat `composer_audit.available: false` or an empty advisory list as “no vulnerabilities” unless the check actually ran.
+
+### Audit skill
+
+Use the `laravel-audit` skill when asked to audit or review a Laravel application. It contains the full workflow, evidence requirements, and severity/confidence guidance. Domain skills (`laravel-audit-security`, `laravel-audit-performance`, `laravel-audit-architecture`, `laravel-audit-database`, `laravel-audit-testing`, `laravel-audit-conventions`) go deeper once the scope is chosen. Use `laravel-audit-dsa` for a bounded subsystem / data-structure / ownership audit (`auditor:context subsystems`, P0–P3 ranking).
+
+### Key rules
+
+- Evidence first: every meaningful finding cites concrete file paths, lines, routes, or config keys.
+- Prefer deterministic project facts over model guesses.
+- Distinguish confirmed findings from hypotheses.
+- Never claim exploitability without sufficient evidence.
+- Read-only by default: never modify application code during an audit.
+- Few high-quality findings over noisy volume.
+
+=== mrpunyapal/laravel-auditor/dsa rules ===
+
+## Laravel Auditor DSA
+
+When asked for a DSA, data-structure, ownership, or subsystem audit, use the `laravel-audit-dsa` skill.
+
+- Read-only. Do not implement fixes during the audit.
+- Inventory subsystems first (`php artisan auditor:context subsystems`).
+- One worker per ownership boundary. At most two findings per subsystem.
+- Skip when the local code is already clear.
+- Verify every finding yourself before it enters the report.
+- Rank P0–P3. Keep P3 small. Set `metadata.priority` to `p0`–`p3` and `metadata.subsystem` to the inventory id.
+- Prefer `AUD-DSA-*` rules when they fit. Otherwise use the six core domains.
+
+Do not recommend a new type just to hide existing branching.
+
+=== mrpunyapal/laravel-auditor/findings rules ===
+
+## Laravel Auditor findings
+
+Write structured findings, not a chat-only review. Match `schema/finding.schema.json`.
+
+Required: `id`, `rule_id`, `title`, `domain`, `severity`, `confidence`, `summary`, `why_it_matters`.
+
+Include whenever possible: `status` (`open` for new findings), `evidence`, `affected_resources`, `symbol`, `recommendation`, `remediation`, `verification_notes`, and `metadata.priority` (`p0`–`p3`).
+
+Write JSON to `storage/auditor-findings.json` and render:
+
+```bash
+php artisan auditor:report --findings=storage/auditor-findings.json
+php artisan auditor:ci --findings=storage/auditor-findings.json --fail-on=high
+```
+
+Preview the packaged example with `php artisan auditor:report --example`.
+
 </laravel-boost-guidelines>

@@ -24,3 +24,6 @@ yarn-error.log
 /.vscode
 /.zed
 tests/Browser/Screenshots
+
+/storage/auditor-findings.json
+/storage/auditor-report.md
