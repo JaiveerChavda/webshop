@@ -1,0 +1,154 @@
+[
+  {
+    "id": "F-2026-0001",
+    "rule_id": "AUD-DSA-001",
+    "title": "Stripe checkout completion is not idempotent",
+    "domain": "architecture",
+    "severity": "medium",
+    "confidence": "high",
+    "status": "open",
+    "summary": "Every checkout.session.completed webhook reaches order creation without a prior duplicate check or a database uniqueness constraint on the Stripe session id.",
+    "why_it_matters": "A replayed or retried completion can create another order, resend confirmation mail, and repeat cart deletion for the same paid checkout.",
+    "evidence": [
+      {"type":"file","reference":"app/Listeners/StripeEventListener.php","line":14,"end_line":18,"note":"Dispatches completion handling for each checkout.session.completed payload."},
+      {"type":"file","reference":"app/Actions/WebShop/StripeCheckoutSessionCompleted.php","line":20,"end_line":25,"note":"Creates an order without checking for an existing Stripe session id."},
+      {"type":"file","reference":"database/migrations/2025_06_28_124119_create_orders_table.php","line":14,"end_line":25,"note":"Defines stripe_checkout_session_id without a unique constraint."},
+      {"type":"file","reference":"app/Actions/WebShop/StripeCheckoutSessionCompleted.php","line":70,"end_line":74,"note":"Deletes the cart and sends confirmation after creating the order."}
+    ],
+    "affected_resources": [
+      "app/Listeners/StripeEventListener.php",
+      "app/Actions/WebShop/StripeCheckoutSessionCompleted.php",
+      "database/migrations/2025_06_28_124119_create_orders_table.php"
+    ],
+    "recommendation": "Make completion idempotent using a unique database constraint and an atomic existing-order check before creating the order; ensure duplicate deliveries do not resend mail or repeat cart cleanup.",
+    "verification_notes": "Static trace was cross-checked against the orders migration and live SQLite schema. No runtime duplicate event was generated.",
+    "metadata": {"priority": "p1", "subsystem": "EVT"}
+  },
+  {
+    "id": "F-2026-0002",
+    "rule_id": "AUD-DB-004",
+    "title": "Commerce foreign-key columns have no database constraints",
+    "domain": "database",
+    "severity": "medium",
+    "confidence": "confirmed",
+    "status": "open",
+    "summary": "The commerce schema stores relationships as unsigned integer columns without foreign keys, so orphaned carts, cart items, variants, orders, and order items are not prevented by the database.",
+    "why_it_matters": "Application-level Eloquent relationships can return missing related records or preserve invalid references after deletes, undermining order and cart data integrity.",
+    "evidence": [
+      {"type":"file","reference":"database/migrations/2025_06_07_163813_create_product_variants_table.php","line":14,"end_line":19,"note":"product_id is an integer without a foreign-key declaration."},
+      {"type":"file","reference":"database/migrations/2025_06_07_163859_create_carts_table.php","line":14,"end_line":18,"note":"user_id is an integer without a foreign-key declaration."},
+      {"type":"file","reference":"database/migrations/2025_06_07_163918_create_cart_items_table.php","line":14,"end_line":19,"note":"cart_id and product_variant_id have no foreign keys."},
+      {"type":"file","reference":"database/migrations/2025_06_28_124119_create_orders_table.php","line":14,"end_line":25,"note":"user_id has no foreign key."},
+      {"type":"file","reference":"database/migrations/2025_06_28_124606_create_order_items_table.php","line":14,"end_line":26,"note":"order_id and product_variant_id have no foreign keys."},
+      {"type":"schema","reference":"live SQLite schema: cart_items and carts","note":"foreign_keys is [] and sqlite_master has no REFERENCES clauses for the commerce tables."}
+    ],
+    "affected_resources": [
+      "database/migrations/2025_06_07_163813_create_product_variants_table.php",
+      "database/migrations/2025_06_07_163859_create_carts_table.php",
+      "database/migrations/2025_06_07_163918_create_cart_items_table.php",
+      "database/migrations/2025_06_28_124119_create_orders_table.php",
+      "database/migrations/2025_06_28_124606_create_order_items_table.php"
+    ],
+    "recommendation": "Add forward-only constraints for each relationship with explicitly chosen delete behavior, then validate existing data before applying them.",
+    "verification_notes": "Migration source and the configured SQLite schema were both inspected; no foreign keys were reported.",
+    "metadata": {"priority": "p1", "subsystem": "DB"}
+  },
+  {
+    "id": "F-2026-0003",
+    "rule_id": "AUD-PER-001",
+    "title": "Checkout formats cart variants without eager loading",
+    "domain": "performance",
+    "severity": "medium",
+    "confidence": "high",
+    "status": "open",
+    "summary": "Checkout explicitly eager-loads product but accesses each cart item's variant inside the item map without eager loading the variant relation.",
+    "why_it_matters": "Checkout requests with multiple cart items can issue one additional variant query per item, increasing database round trips on a payment-start path.",
+    "evidence": [
+      {"type":"file","reference":"app/Actions/WebShop/CreateStripeCheckoutSession.php","line":34,"end_line":36,"note":"Loads product only."},
+      {"type":"file","reference":"app/Actions/WebShop/CreateStripeCheckoutSession.php","line":38,"end_line":53,"note":"Maps every cart item and reads variant fields at lines 45-46."},
+      {"type":"file","reference":"app/Models/CartItem.php","line":29,"end_line":32,"note":"variant() is a BelongsTo relation."},
+      {"type":"file","reference":"app/Actions/WebShop/CreateStripeCheckoutSession.php","line":16,"end_line":16,"note":"Passes the cart item collection into the formatter."}
+    ],
+    "affected_resources": [
+      "app/Actions/WebShop/CreateStripeCheckoutSession.php",
+      "app/Models/CartItem.php"
+    ],
+    "recommendation": "Eager-load variant together with product before mapping the cart items, and add a query-count regression test for a multi-item cart.",
+    "verification_notes": "The relationship definition and formatter access were traced statically; no production query trace was available.",
+    "metadata": {"priority": "p2", "subsystem": "MDL"}
+  },
+  {
+    "id": "F-2026-0004",
+    "rule_id": "AUD-PER-006",
+    "title": "Order history loads every order item in one request",
+    "domain": "performance",
+    "severity": "low",
+    "confidence": "confirmed",
+    "status": "open",
+    "summary": "The authenticated orders page retrieves the user's complete order-item history with get() and has no pagination or limit.",
+    "why_it_matters": "The response and memory cost grow with a user's entire purchase history rather than with a bounded page size.",
+    "evidence": [
+      {"type":"file","reference":"routes/web.php","line":18,"end_line":22,"note":"Exposes orders behind auth middleware."},
+      {"type":"file","reference":"app/Livewire/Orders.php","line":12,"end_line":15,"note":"Loads the complete order-item history with latest()->get()."},
+      {"type":"test","reference":"tests/Feature and tests/Unit","note":"No orders page test establishes a bounded result requirement."}
+    ],
+    "affected_resources": [
+      "app/Livewire/Orders.php",
+      "routes/web.php"
+    ],
+    "recommendation": "Use pagination or another explicit bound for order history and verify the intended display behavior with a feature test.",
+    "verification_notes": "The route and query were inspected directly; dataset size in production was not available.",
+    "metadata": {"priority": "p2", "subsystem": "HTTP"}
+  },
+  {
+    "id": "F-2026-0005",
+    "rule_id": "AUD-TST-001",
+    "title": "Payment completion and order persistence lack integration coverage",
+    "domain": "testing",
+    "severity": "medium",
+    "confidence": "confirmed",
+    "status": "open",
+    "summary": "The test inventory covers checkout-session creation but has no test for Stripe webhook dispatch, checkout completion, order creation, cart cleanup, or confirmation mail.",
+    "why_it_matters": "The highest-value state transition in the shop is unprotected by an executable test, including the replay-sensitive behavior identified above.",
+    "evidence": [
+      {"type":"test","reference":"tests/Unit/WebShop/CreateStripeCheckoutSessionTest.php","line":10,"end_line":38,"note":"Tests checkout-session creation only and mocks Checkout."},
+      {"type":"file","reference":"app/Listeners/StripeEventListener.php","line":14,"end_line":18,"note":"Contains webhook dispatch."},
+      {"type":"file","reference":"app/Actions/WebShop/StripeCheckoutSessionCompleted.php","line":18,"end_line":75,"note":"Contains webhook-to-order persistence."},
+      {"type":"test","reference":"Auditor test inventory: 22 files","note":"No StripeEventListener or StripeCheckoutSessionCompleted test is present."}
+    ],
+    "affected_resources": [
+      "app/Listeners/StripeEventListener.php",
+      "app/Actions/WebShop/StripeCheckoutSessionCompleted.php",
+      "tests/Unit/WebShop/CreateStripeCheckoutSessionTest.php"
+    ],
+    "recommendation": "Add integration coverage for a valid completion, duplicate completion, missing/invalid metadata, persisted order items, cart cleanup, and confirmation-mail behavior.",
+    "verification_notes": "Test inventory and source search were cross-checked. Full execution was blocked by the environment's inability to bind a local browser-test port.",
+    "metadata": {"priority": "p1", "subsystem": "EVT"}
+  },
+  {
+    "id": "F-2026-0006",
+    "rule_id": "AUD-TST-003",
+    "title": "Admin-panel authorization boundary is not tested",
+    "domain": "testing",
+    "severity": "medium",
+    "confidence": "high",
+    "status": "open",
+    "summary": "The application gates Filament access by configured admin email, but the test suite does not verify that the configured administrator is accepted and another authenticated user is rejected.",
+    "why_it_matters": "A regression in the panel-access predicate could expose product and customer-order administration or lock out the only intended administrator without a failing test.",
+    "evidence": [
+      {"type":"file","reference":"app/Models/User.php","line":17,"end_line":17,"note":"User implements FilamentUser."},
+      {"type":"file","reference":"app/Models/User.php","line":93,"end_line":96,"note":"Panel access compares the user's email with config('app.admin_email')."},
+      {"type":"file","reference":"app/Providers/Filament/AdminPanelProvider.php","line":24,"end_line":57,"note":"Registers the admin panel and authentication middleware."},
+      {"type":"test","reference":"tests/Unit/Filament/ProductResourceTest.php","line":8,"end_line":57,"note":"Tests table behavior without actingAs(), canAccessPanel(), or denied-user assertions."},
+      {"type":"context","reference":"policies_authorization","note":"The authorization collector reports no policy classes."}
+    ],
+    "affected_resources": [
+      "app/Models/User.php",
+      "app/Providers/Filament/AdminPanelProvider.php",
+      "tests/Unit/Filament/ProductResourceTest.php"
+    ],
+    "recommendation": "Add authenticated allowed/denied panel-access tests and resource-level tests for the destructive product/order actions.",
+    "verification_notes": "The access predicate, panel middleware, authorization inventory, and Filament tests were inspected. No behavior was changed or inferred beyond the missing assertions.",
+    "metadata": {"priority": "p1", "subsystem": "TST"}
+  }
+]
