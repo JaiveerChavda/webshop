@@ -19,11 +19,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
  * @property-read string $original_image_url;
  * @property-read string $preview_image_url;
  */
-
 class Product extends Model implements HasMedia
 {
     /** @use HasFactory<\Database\Factories\ProductFactory> */
     use HasFactory,InteractsWithMedia;
+
     protected $appends = ['original_image_url', 'preview_image_url'];
 
     public function variants(): HasMany
@@ -58,7 +58,9 @@ class Product extends Model implements HasMedia
 
     public function previewImageUrl(): Attribute
     {
-        return Attribute::get(fn () => $this->getFirstMedia()?->getUrl('preview'));
+        $fakeImageUrl = 'https://dummyimage.com/252x252/7EE0ED/0F0F0F&text='.$this->name;
+
+        return Attribute::get(fn () => $this->getFirstMedia()?->getUrl('preview') ?: $fakeImageUrl);
     }
 
     public function originalImageUrl(): Attribute
@@ -66,7 +68,8 @@ class Product extends Model implements HasMedia
         return Attribute::get(fn () => $this->getFirstMedia()?->getUrl());
     }
 
-    public function orders():HasManyThrough {
+    public function orders(): HasManyThrough
+    {
         return $this->through('variants')->has('orderItems');
     }
 }

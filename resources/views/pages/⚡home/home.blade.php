@@ -1,5 +1,5 @@
 <div class="grid grid-cols-4 gap-6">
-    @foreach ($this->products as $product)
+    @forelse($this->products as $product)
         <article
             class="border hover:border-gray-800 dark:border-gray-300 hover:dark:border-gray-400 hover:bg-gray-100 hover:dark:bg-zinc-900
         p-4 rounded-2xl transition shadow">
@@ -10,5 +10,18 @@
                 <p class="text-sm dark:text-gray-100">{{ $product->price }}</p>
             </a>
         </article>
-    @endforeach
+    @empty
+        <div class="text-center text-gray-500 py-8">
+            No products found.
+        </div>
+    @endforelse
+
+    @if ($this->products->hasMorePages())
+        <div
+            x-intersect="$wire.loadMore()"
+            class="flex justify-center align-center py-4 transition-opacity"
+        >
+            <div class="w-6 h-6 border-2 border-t-slate-500 border-b-slate-500 rounded-full animate-spin"></div>
+        </div>
+    @endif
 </div>
