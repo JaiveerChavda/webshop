@@ -22,10 +22,15 @@ new class extends Component
     public function availableSizes(): Collection
     {
         return ProductVariant::query()
-            ->select('size')
-            ->distinct()
-            ->orderBy('size')
-            ->pluck('size');
+            ->leftJoin('products', 'products.id', '=', 'product_variants.product_id')
+            ->select([
+                'product_variants.size',
+                DB::raw('COUNT(DISTINCT products.id) AS product_count'),
+            ])
+            ->groupBy('product_variants.size')
+            ->orderBy('product_variants.size')
+            ->get();
+
     }
 
     #[Computed()]

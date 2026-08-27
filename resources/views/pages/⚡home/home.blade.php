@@ -7,8 +7,8 @@
         <flux:heading size="lg" heading="2">Size</flux:heading>
 
         <div class="mt-2 flex flex-col gap-1">
-            @foreach ($this->availableSizes as $size)
-                <flux:checkbox wire:model.live="sizes" value="{{ $size }}" label="{{ $size }}" />
+            @foreach ($this->availableSizes as $item)
+                <flux:checkbox wire:model.live="sizes" value="{{ $item->size }}" label="{{ $item->size }} ( {{ $item->product_count }} )" />
             @endforeach
         </div>
     </aside>
