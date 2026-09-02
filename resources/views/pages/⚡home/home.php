@@ -2,20 +2,26 @@
 
 use App\Models\Product;
 use App\Models\ProductVariant;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 new class extends Component
 {
 
-    public int $perPage = 20;
+    const LIMIT = 20;
+
+    public int $offset = 0;
 
     public array $sizes = [];
 
     public function loadMore()
     {
-        $this->perPage += 10;
+        $this->offset += self::LIMIT;
+
+        if($this->products->count() < self::LIMIT){
+            $this->dispatch('no-more-products');
+        }
     }
 
     #[Computed()]
@@ -34,14 +40,22 @@ new class extends Component
     }
 
     #[Computed()]
-    public function Products()
+    public function products()
     {
         return Product::query()
-            ->with('variants')
+            ->with('variants','media')
             ->when($this->sizes, fn ($query) => $query->whereHas(
                 'variants',
                 fn ($query) => $query->whereIn('size', $this->sizes)
             ))
-            ->paginate(perPage: $this->perPage);
+            ->limit(self::LIMIT)
+            ->offset($this->offset)
+            ->get();
+    }
+
+    #[Computed()]
+    public function hasMoreProducts(): bool
+    {
+        return $this->products->count() === 20;
     }
 };
